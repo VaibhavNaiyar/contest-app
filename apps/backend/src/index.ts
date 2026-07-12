@@ -5,6 +5,7 @@ import adminRouter from './routes/admin';
 import contestRouter from './routes/contest';
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 

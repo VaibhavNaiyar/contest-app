@@ -16,6 +16,7 @@ datasource db {
 model User {
   id              String          @id @default(uuid())
   email           String          @unique
+  role            Role            @default(User)
   leaderboard    LeaderBoard[]
   submissions    Submission[]
   contestSubmissions    ContestSubmission[]

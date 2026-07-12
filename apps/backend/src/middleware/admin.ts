@@ -1,20 +1,34 @@
-import type {NextFunction , Request , Response } from "express";
-import jwt , { JwtPayload } from "jsonwebtoken";
+import type { NextFunction, Request, Response } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { client } from "@repo/db";
 
-export function adminMiddleware(req: Request , res: Response , next: NextFunction) {
+export async function adminMiddleware(req: Request, res: Response, next: NextFunction) {
     const token = req.headers.authorization as string;
     try {
-        const decoded = jwt.verify(token,process.env.ADMIN_JWT_PASSWORD!) as JwtPayload;
-        if(decoded.adminId) {
-            next();
+        const decoded = jwt.verify(token, process.env.USER_JWT_PASSWORD!) as JwtPayload;
+        if (decoded.userId) {
+            req.userId = decoded.userId;
+            const user = await client.user.findFirst({
+                where: {
+                    id: decoded.userId,
+                    role: "Admin"
+                }
+            });
+            if (user) {
+                next();
+            } else {
+                res.status(403).json({
+                    message: "You are not an admin ser"
+                })
+            }
         } else {
             res.status(403).json({
-                message:"Access denied"
+                message: "Incorrect token"
             })
         }
     } catch(e) {
         res.status(403).json({
-            message:"Invalid token"
+            message: "Incorrect token"
         })
     }
 }

@@ -33,7 +33,7 @@ router.post("/signin", async (req,res) => {
     },process.env.EMAIL_JWT_PASSWORD!);
 
     if (process.env.NODE_ENV === "production") {
-        await sendEmail(data.email , `Login to Contest platform`, `Click on the link to login : ${process.env.FRONTEND_URL}/login?token=${emailToken}`);
+        await sendEmail(data.email , `Login to Contest platform`, `Click on the link to login : ${process.env.FRONTEND_URL}/user/login/post?token=${emailToken}`);
     }
     else {
         console.log(`the link for ${data.email} to login is : ${process.env.FRONTEND_URL}/login?token=${emailToken}`);

@@ -1,14 +1,10 @@
-import {Router} from "express";
+import { Router } from "express";
+import { adminMiddleware } from "../middleware/admin";
 
-const router = Router();
+const router: Router = Router();
 
-router.post("/signup",(req,res) => {
+router.use(adminMiddleware);
 
-})
-
-
-router.post("/signin",(req,res) => {
-    
-})
+// admin routes go here
 
 export default router;
