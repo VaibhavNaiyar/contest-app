@@ -18,6 +18,8 @@ model User {
   email           String          @unique
   password        String
   leaderboard    LeaderBoard[]
+  submissions    Submission[]
+  contestSubmissions    ContestSubmission[]
 }
 
 enum Role {
@@ -54,15 +56,32 @@ model Challenge {
   contestId     String
   maxPoints      Int
   contestToChallengeMapping      ContestToChallengeMapping[]
+  submissions    Submission[]
 }
 
-model Submission {  
+model ContestSubmission {  
   id                             String          @id @default(uuid())
+  submission                     String
   contestToChallengeMappingID    String
+  userId                         String
+  user                           User                           @relation(fields: [userId], references: [id])
   contestToChallengeMapping      ContestToChallengeMapping      @relation(fields: [contestToChallengeMappingID], references: [id])
   points                         Int 
   createdAt                      DateTime        @default(now())
 }
+
+
+model  Submission {  
+  id                             String          @id @default(uuid())
+  submission                     String
+  userId                         String
+  user                           User                           @relation(fields: [userId], references: [id])
+  challengeId                    String
+  challenge                      Challenge                       @relation(fields: [challengeId], references: [id])
+  points                         Int 
+  createdAt                      DateTime        @default(now())
+}
+
 
 model LeaderBoard {
   id            String          @id @default(uuid())
