@@ -16,7 +16,6 @@ datasource db {
 model User {
   id              String          @id @default(uuid())
   email           String          @unique
-  password        String
   leaderboard    LeaderBoard[]
   submissions    Submission[]
   contestSubmissions    ContestSubmission[]
@@ -43,7 +42,7 @@ model ContestToChallengeMapping {
   contestId      String
   challengeId    String
   index          Int
-  submissions    Submission[]
+  contestSubmissions    ContestSubmission[]
   contest        Contest         @relation(fields: [contestId ], references: [id])    
   challenge      Challenge       @relation(fields: [challengeId], references: [id])      
   @@unique([contestId, challengeId])
