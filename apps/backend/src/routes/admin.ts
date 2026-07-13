@@ -18,7 +18,8 @@ router.post("/contest", async (req, res) => {
     const contest = await client.contest.create({
         data: {
             title: data.title,
-            startTime: new Date(data.startTime)
+            startTime: new Date(data.startTime),
+            endTime: new Date(data.endTime)
         }
     });
 

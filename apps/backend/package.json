@@ -10,6 +10,7 @@
     "lint": "eslint --max-warnings 0"
   },
   "dependencies": {
+    "@notionhq/client": "^2.3.0",
     "@repo/db": "workspace:*",
     "@types/cors": "^2.8.19",
     "axios": "^1.9.0",

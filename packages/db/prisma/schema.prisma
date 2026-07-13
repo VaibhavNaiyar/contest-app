@@ -31,9 +31,9 @@ model Contest {
   id                             String          @id @default(uuid())
   title                          String
   startTime                      DateTime
+  endTime                        DateTime
   contestToChallengeMapping      ContestToChallengeMapping[]
   leaderboard    LeaderBoard[]
-
 }
 
 //many to many relationship btw contests and challenges 
@@ -87,8 +87,10 @@ model LeaderBoard {
   contestId     String
   userId        String
   rank          Int
-  contest       Contest       @relation(fields: [contestId], references: [id])
-  user          User          @relation(fields: [userId], references: [id])
+  totalPoints   Int             @default(0)
+  contest       Contest         @relation(fields: [contestId], references: [id])
+  user          User            @relation(fields: [userId], references: [id])
 
   @@unique([contestId, rank])
+  @@unique([contestId, userId])
 }
