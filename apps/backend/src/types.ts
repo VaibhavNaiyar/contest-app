@@ -24,3 +24,8 @@ export const PaginationSchema = z.object({
     page: z.coerce.number().int().positive().default(1),
     limit: z.coerce.number().int().positive().max(50).default(10)
 })
+
+export const SubmitSchema = z.object({
+    contestId: z.string().min(1),
+    code: z.string().min(1)
+})
