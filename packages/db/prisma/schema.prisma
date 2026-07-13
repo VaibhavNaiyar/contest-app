@@ -53,8 +53,7 @@ model Challenge {
   id            String          @id @default(uuid())
   title         String
   notionDocId   String
-  contestId     String
-  maxPoints      Int
+  maxPoints     Int
   contestToChallengeMapping      ContestToChallengeMapping[]
   submissions    Submission[]
 }
