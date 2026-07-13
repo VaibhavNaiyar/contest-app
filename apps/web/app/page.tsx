@@ -1,102 +1,93 @@
-import Image, { type ImageProps } from "next/image";
-import { Button } from "@repo/ui/button";
-import styles from "./page.module.css";
+"use client";
 
-type Props = Omit<ImageProps, "src"> & {
-  srcLight: string;
-  srcDark: string;
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../lib/auth";
+import { apiGet } from "../lib/api";
+import { CountdownTimer } from "../components/CountdownTimer";
+
+type Contest = {
+    id: string;
+    title: string;
+    startTime: string;
+    endTime: string;
 };
 
-const ThemeImage = (props: Props) => {
-  const { srcLight, srcDark, ...rest } = props;
+export default function HomePage() {
+    const { token, isLoading } = useAuth();
+    const router = useRouter();
+    const [active, setActive] = useState<Contest[]>([]);
+    const [finished, setFinished] = useState<Contest[]>([]);
+    const [tab, setTab] = useState<"active" | "finished">("active");
+    const [fetching, setFetching] = useState(true);
 
-  return (
-    <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
-    </>
-  );
-};
+    useEffect(() => {
+        if (!isLoading && !token) {
+            router.replace("/login");
+        }
+    }, [token, isLoading]);
 
-export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <ThemeImage
-          className={styles.logo}
-          srcLight="turborepo-dark.svg"
-          srcDark="turborepo-light.svg"
-          alt="Turborepo logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>apps/web/app/page.tsx</code>
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    useEffect(() => {
+        if (!token) return;
+        Promise.all([
+            apiGet("/contest/active"),
+            apiGet("/contest/finished")
+        ]).then(([a, f]) => {
+            setActive(a.contests ?? []);
+            setFinished(f.contests ?? []);
+            setFetching(false);
+        });
+    }, [token]);
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new/clone?demo-description=Learn+to+implement+a+monorepo+with+a+two+Next.js+sites+that+has+installed+three+local+packages.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F4K8ZISWAzJ8X1504ca0zmC%2F0b21a1c6246add355e55816278ef54bc%2FBasic.png&demo-title=Monorepo+with+Turborepo&demo-url=https%3A%2F%2Fexamples-basic-web.vercel.sh%2F&from=templates&project-name=Monorepo+with+Turborepo&repository-name=monorepo-turborepo&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fturborepo%2Ftree%2Fmain%2Fexamples%2Fbasic&root-directory=apps%2Fdocs&skippable-integrations=1&teamSlug=vercel&utm_source=create-turbo"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://turborepo.dev/docs?utm_source"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+    if (isLoading || !token) return null;
+
+    const contests = tab === "active" ? active : finished;
+
+    return (
+        <div className="container">
+            <div className="page-header">
+                <h1 className="page-title">Contests</h1>
+                <p className="page-subtitle">Solve dev challenges and climb the leaderboard</p>
+            </div>
+
+            <div className="tabs">
+                <button
+                    className={`tab ${tab === "active" ? "active" : ""}`}
+                    onClick={() => setTab("active")}
+                >
+                    Active
+                </button>
+                <button
+                    className={`tab ${tab === "finished" ? "active" : ""}`}
+                    onClick={() => setTab("finished")}
+                >
+                    Finished
+                </button>
+            </div>
+
+            {fetching ? (
+                <p className="empty">Loading...</p>
+            ) : contests.length === 0 ? (
+                <p className="empty">No {tab} contests right now.</p>
+            ) : (
+                contests.map((c) => (
+                    <div key={c.id} className="card" onClick={() => router.push(`/contest/${c.id}`)}>
+                        <div>
+                            <div className="card-title">{c.title}</div>
+                            <div className="card-meta">
+                                {tab === "active" ? (
+                                    <CountdownTimer target={c.endTime} label="Ends in" />
+                                ) : (
+                                    `Ended ${new Date(c.endTime).toLocaleDateString()}`
+                                )}
+                            </div>
+                        </div>
+                        <span className={`badge ${tab === "active" ? "badge-active" : "badge-finished"}`}>
+                            {tab === "active" ? "Live" : "Ended"}
+                        </span>
+                    </div>
+                ))
+            )}
         </div>
-        <Button appName="web" className={styles.secondary}>
-          Open alert
-        </Button>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com/templates?search=turborepo&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://turborepo.dev?utm_source=create-turbo"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to turborepo.dev →
-        </a>
-      </footer>
-    </div>
-  );
+    );
 }

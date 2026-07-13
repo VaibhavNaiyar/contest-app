@@ -1,17 +1,17 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface-hover: #242424;
+  --border: #2a2a2a;
+  --foreground: #ededed;
+  --muted: #888;
+  --accent: #4f8ef7;
+  --accent-hover: #3a7ae6;
+  --danger: #e74c3c;
+  --success: #2ecc71;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
+html, body {
   max-width: 100vw;
   overflow-x: hidden;
 }
@@ -19,6 +19,8 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
+  font-family: var(--font-geist-sans), sans-serif;
+  line-height: 1.6;
 }
 
 * {
@@ -32,19 +34,314 @@ a {
   text-decoration: none;
 }
 
-.imgDark {
-  display: none;
+button {
+  cursor: pointer;
+  font-family: inherit;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* Layout */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
 
-  .imgLight {
-    display: none;
-  }
-  .imgDark {
-    display: unset;
-  }
+/* Navbar */
+.navbar {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.navbar-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+
+.tab {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab:hover { color: var(--foreground); }
+
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* Contest card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 24px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.card:hover {
+  border-color: var(--accent);
+  background: var(--surface-hover);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.card-meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.badge-active {
+  background: rgba(46, 204, 113, 0.15);
+  color: var(--success);
+}
+
+.badge-finished {
+  background: rgba(136, 136, 136, 0.15);
+  color: var(--muted);
+}
+
+/* Page header */
+.page-header {
+  padding: 36px 0 28px;
+}
+
+.page-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+
+.page-subtitle {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Challenge row */
+.challenge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  margin-bottom: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.challenge-row:hover {
+  border-color: var(--accent);
+  background: var(--surface-hover);
+}
+
+.challenge-index {
+  font-size: 13px;
+  color: var(--muted);
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.challenge-title {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.challenge-points {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Countdown */
+.countdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.countdown-value {
+  font-family: var(--font-geist-mono), monospace;
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+/* Notion content */
+.notion-content {
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.notion-content h1 { font-size: 22px; font-weight: 700; margin: 24px 0 12px; }
+.notion-content h2 { font-size: 18px; font-weight: 600; margin: 20px 0 10px; }
+.notion-content h3 { font-size: 15px; font-weight: 600; margin: 16px 0 8px; }
+.notion-content p  { margin-bottom: 12px; color: #ccc; }
+
+.notion-content ul,
+.notion-content ol {
+  padding-left: 24px;
+  margin-bottom: 12px;
+}
+
+.notion-content li { margin-bottom: 4px; color: #ccc; }
+
+.notion-content pre {
+  background: #111;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+.notion-content code {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 13px;
+  color: #a8d8a8;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover { background: var(--accent-hover); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+  color: var(--foreground);
+  border-color: #444;
+}
+
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Back link */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 20px;
+  transition: color 0.15s;
+}
+
+.back-link:hover { color: var(--foreground); }
+
+/* Info row */
+.info-row {
+  display: flex;
+  gap: 24px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.info-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+
+.info-value {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Divider */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 28px 0;
 }
