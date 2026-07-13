@@ -32,11 +32,12 @@ router.post("/signin", async (req,res) => {
         userId:user.id
     },process.env.EMAIL_JWT_PASSWORD!);
 
+    const loginLink = `${process.env.FRONTEND_URL}/login/callback?token=${emailToken}`;
+
     if (process.env.NODE_ENV === "production") {
-        await sendEmail(data.email , `Login to Contest platform`, `Click on the link to login : ${process.env.FRONTEND_URL}/user/login/post?token=${emailToken}`);
-    }
-    else {
-        console.log(`the link for ${data.email} to login is : ${process.env.FRONTEND_URL}/login?token=${emailToken}`);
+        await sendEmail(data.email, `Login to Dev-Forces`, `Click the link to sign in: ${loginLink}`);
+    } else {
+        console.log(`Login link for ${data.email}: ${loginLink}`);
     }
 
     res.json({

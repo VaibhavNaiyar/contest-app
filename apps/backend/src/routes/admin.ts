@@ -37,6 +37,7 @@ router.post("/challenge", async (req, res) => {
     const challenge = await client.challenge.create({
         data: {
             title: data.title,
+            description: data.description,
             notionDocId: data.notionDocId,
             maxPoints: data.maxPoints
         }

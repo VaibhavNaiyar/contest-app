@@ -2,7 +2,7 @@ import { Router } from "express";
 import { userMiddleware } from "../middleware/user";
 import { client } from "@repo/db";
 import { PaginationSchema, SubmitSchema } from "../types";
-import { getNotionPage, blocksToText } from "../notion";
+import { getNotionPage } from "../notion";
 import { judgeSubmission } from "../openai";
 
 const router: Router = Router();
@@ -151,7 +151,7 @@ router.post("/submit/:challengeId", userMiddleware, async (req, res) => {
         select: {
             id: true,
             challenge: {
-                select: { maxPoints: true, notionDocId: true, title: true }
+                select: { maxPoints: true, description: true, title: true }
             }
         }
     });
@@ -171,12 +171,8 @@ router.post("/submit/:challengeId", userMiddleware, async (req, res) => {
         return;
     }
 
-    // fetch problem description from Notion and convert to plain text
-    const blocks = await getNotionPage(mapping.challenge.notionDocId);
-    const problemDescription = blocksToText(blocks as any[]);
-
-    // judge with OpenAI
-    const result = await judgeSubmission(problemDescription, code, mapping.challenge.maxPoints);
+    // judge with OpenAI using the stored challenge description
+    const result = await judgeSubmission(mapping.challenge.description, code, mapping.challenge.maxPoints);
 
     // store in both submission tables
     await client.$transaction([

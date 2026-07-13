@@ -12,6 +12,7 @@ export const CreateContestSchema = z.object({
 
 export const CreateChallengeSchema = z.object({
     title: z.string().min(1),
+    description: z.string().min(1),
     notionDocId: z.string().min(1),
     maxPoints: z.number().int().positive()
 })
